@@ -12,7 +12,7 @@ int main(){
 	struct sockaddr_in c_addr;
 	int n;
 	char rcvBuffer[BUFSIZE];//서버에서 보내준 메세지를 저장하는 변수
-	char sndBuffer[BUFSIZE] = "Hi, I am Client";
+	char sndBuffer[BUFSIZE];
 	//1. 클라이언트 소켓 생성
 	c_socket = socket(PF_INET, SOCK_STREAM, 0); //서버와 동일한 설정으로 생성
 	//2.소켓 정보 초기화
@@ -29,6 +29,8 @@ int main(){
 		return -1;  //프로세스 종료
 	}
 	//4. 서버에 메세지 보내기
+	//입력받기
+	fgets(sndBuffer, sizeof(sndBuffer), stdin);
  	write(c_socket,sndBuffer,strlen(sndBuffer));
 	//4. 서버에서 보낸 메시지 읽기 
 	n = read(c_socket, rcvBuffer, sizeof(rcvBuffer)); 
@@ -40,7 +42,7 @@ int main(){
 	}
 	rcvBuffer[n] = '\0'; //문자열 뒷부분 깨짐 방지
 	printf("received data: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
-	printf("rcvBuffer length: %d\n", n); //3-2. 서버에섭 다은 메세지의 길이 출력 
+	printf("rcvBuffer length: %d\n", n-1); //3-2. 서버에섭 다은 메세지의 길이 출력 
 	close(c_socket);
 	return 0;	
 }
