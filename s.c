@@ -50,12 +50,14 @@ int main(){
 			n = read(c_socket, rcvBuffer, sizeof(rcvBuffer));
 			printf("received data : %s\n",rcvBuffer);
 			write(c_socket, rcvBuffer, strlen(rcvBuffer)); //클라이언트에게 buffer의 내용을 전송함
-			if(strncasecmp(rcvBuffer, "quit", 4) == 0)
+			if(strncasecmp(rcvBuffer, "quit", 4) == 0 || strncasecmp(rcvBuffer,"kill server",11) == 0)
 				break;
 			for(i=0;i<BUFSIZE;i++)
 				rcvBuffer[i] = '\0';
 		}
 		close(c_socket);
+		if(strncasecmp(rcvBuffer,"kill server",11) == 0)
+			break;
 	}
 	close(s_socket);
 	return 0;	

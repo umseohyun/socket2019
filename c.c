@@ -36,7 +36,7 @@ int main(){
 		fgets(sndBuffer, sizeof(sndBuffer), stdin);
 		//서버로 메세지 전송
 	 	write(c_socket,sndBuffer,strlen(sndBuffer));
-		if(strncasecmp(sndBuffer,"quit",4) == 0)
+		if(strncasecmp(sndBuffer,"quit",4) == 0 || strncasecmp(sndBuffer,"kill server",11) == 0)
 			break;
 		//서버에서 보낸 메시지 읽기 
 		n = read(c_socket, rcvBuffer, sizeof(rcvBuffer)); 
