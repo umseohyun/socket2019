@@ -13,6 +13,7 @@ int main(){
 	struct sockaddr_in s_addr, c_addr;
 	int len;
 	int n;
+	int i;
 
 	// 1. 서버 소켓 생성
 	//서버 소켓 = 클라이언트의 접속 요청을 처리(허용)해 주기 위한 소켓
@@ -38,7 +39,6 @@ int main(){
 	}
 
 	//5. 클라이언트 요청 처리
-	// 요청을 허용한 후, Hello World 메세지를 전송함
 	while(1){ //무한 루프
 		len = sizeof(c_addr);
 		printf("클라이언트 접속을 기다리는 중....\n");
@@ -46,9 +46,15 @@ int main(){
 		//클라이언트의 요청이 오면 허용(accept)해 주고, 해당 클라이언트와 통신할 수 있도록 클라이언트 소켓(c_socket)을 반환함.
 		printf("/client is connected\n");
 		printf("클라이언트 접속 허용\n");
-		n = read(c_socket, rcvBuffer, sizeof(rcvBuffer));
-		printf("received data : %s\n",rcvBuffer);
-		write(c_socket, rcvBuffer, strlen(rcvBuffer)); //클라이언트에게 buffer의 내용을 전송함
+		while(1){
+			n = read(c_socket, rcvBuffer, sizeof(rcvBuffer));
+			printf("received data : %s\n",rcvBuffer);
+			write(c_socket, rcvBuffer, strlen(rcvBuffer)); //클라이언트에게 buffer의 내용을 전송함
+			if(strncasecmp(rcvBuffer, "quit", 4) == 0)
+				break;
+			for(i=0;i<BUFSIZE;i++)
+				rcvBuffer[i] = '\0';
+		}
 		close(c_socket);
 	}
 	close(s_socket);
