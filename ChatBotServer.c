@@ -6,7 +6,9 @@
 #define PORT 9000
 #define BUFSIZE 100
 char rcvBuffer[BUFSIZE];
-char hi[BUFSIZE] = "Hi, Nice to meet you!";  
+char hi[BUFSIZE] = "Hi, Nice to meet you!";
+char name[BUFSIZE] = "My name is ChatBot!";
+char age[BUFSIZE] = "I'm 20 years old";
 char none[BUFSIZE] = "I don't know!";
 int main(){
 	int c_socket, s_socket;
@@ -51,8 +53,12 @@ int main(){
 			printf("received data : %s\n",rcvBuffer);
 			if(strncasecmp(rcvBuffer, "quit", 4) == 0 || strncasecmp(rcvBuffer,"kill server",11) == 0)
 				break;
-			if(strncasecmp(rcvBuffer, "hi", 2) == 0)
+			else if(strncasecmp(rcvBuffer, "Hi", 2) == 0)
 				write(c_socket, hi, strlen(hi));
+			else if(strncasecmp(rcvBuffer, "What's your name?", 17) == 0)
+				write(c_socket, name, strlen(name));
+			else if(strncasecmp(rcvBuffer, "How old are you?", 16) == 0)
+				write(c_socket, age, strlen(age));
 			else
 				write(c_socket, none, strlen(none));
 			for(i=0;i<BUFSIZE;i++)
