@@ -10,7 +10,9 @@ char hi[BUFSIZE] = "Hi, Nice to meet you!";
 char name[BUFSIZE] = "My name is ChatBot!";
 char age[BUFSIZE] = "I'm 20 years old";
 char none[BUFSIZE] = "I don't know!";
-char len2[BUFSIZE];
+char sndBuffer[BUFSIZE];
+char cmp1[BUFSIZE];
+char cmp2[BUFSIZE];
 int main(){
 	int c_socket, s_socket;
 	struct sockaddr_in s_addr, c_addr;
@@ -51,6 +53,8 @@ int main(){
 		printf("/client is connected\n");
 		printf("클라이언트 접속 허용\n");
 		while(1){
+			strcpy(rcvBuffer,"\0");
+			strcpy(sndBuffer,"\0");
 			n = read(c_socket, rcvBuffer, sizeof(rcvBuffer));
 			printf("received data : %s\n",rcvBuffer);
 			if(strncasecmp(rcvBuffer, "quit", 4) == 0 || strncasecmp(rcvBuffer,"kill server",11) == 0)
@@ -64,13 +68,24 @@ int main(){
 			else if(strncasecmp(rcvBuffer, "strlen", 6) == 0)
 			{
 				stlen = strlen(rcvBuffer)-8;
-				sprintf(len2, "string length is %d", stlen);
-				write(c_socket, len2, strlen(len2));
+				sprintf(sndBuffer, "string length is %d", stlen);
+				write(c_socket, sndBuffer, strlen(sndBuffer));
+			}
+			else if(strncasecmp(rcvBuffer, "strcmp", 6) == 0)
+			{
+				strtok(rcvBuffer," ");
+				strcpy(cmp1, strtok(NULL," "));
+				strcpy(cmp2, strtok(NULL," "));
+				if(strcmp(cmp1,cmp2) == 0){
+					sprintf(sndBuffer,"%s == %s", cmp1, cmp2);
+				}
+				else{
+					sprintf(sndBuffer,"%s != %s", cmp1, cmp2);
+				}
+				write(c_socket, sndBuffer, strlen(sndBuffer));
 			}
 			else
 				write(c_socket, none, strlen(none));
-			for(i=0;i<BUFSIZE;i++)
-				rcvBuffer[i] = '\0';
 		}
 		close(c_socket);
 		if(strncasecmp(rcvBuffer,"kill server",11) == 0)
