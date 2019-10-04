@@ -10,12 +10,14 @@ char hi[BUFSIZE] = "Hi, Nice to meet you!";
 char name[BUFSIZE] = "My name is ChatBot!";
 char age[BUFSIZE] = "I'm 20 years old";
 char none[BUFSIZE] = "I don't know!";
+char len2[BUFSIZE];
 int main(){
 	int c_socket, s_socket;
 	struct sockaddr_in s_addr, c_addr;
-	int len;
+	int stlen;
 	int n;
 	int i;
+	int len;
 
 	// 1. 서버 소켓 생성
 	//서버 소켓 = 클라이언트의 접속 요청을 처리(허용)해 주기 위한 소켓
@@ -59,6 +61,12 @@ int main(){
 				write(c_socket, name, strlen(name));
 			else if(strncasecmp(rcvBuffer, "How old are you?", 16) == 0)
 				write(c_socket, age, strlen(age));
+			else if(strncasecmp(rcvBuffer, "strlen", 6) == 0)
+			{
+				stlen = strlen(rcvBuffer)-8;
+				sprintf(len2, "string length is %d", stlen);
+				write(c_socket, len2, strlen(len2));
+			}
 			else
 				write(c_socket, none, strlen(none));
 			for(i=0;i<BUFSIZE;i++)
