@@ -35,6 +35,7 @@ int main(){
 		printf("Me : ");
 		fgets(sndBuffer, sizeof(sndBuffer), stdin);
 		//서버로 메세지 전송
+		sndBuffer[strlen(sndBuffer)-1] = '\0';  //Delete '\n' in String
 	 	write(c_socket,sndBuffer,strlen(sndBuffer));
 		if(strncasecmp(sndBuffer,"quit",4) == 0 || strncasecmp(sndBuffer,"kill server",11) == 0)
 			break;
@@ -51,6 +52,7 @@ int main(){
 		for(i=0;i<BUFSIZE;i++)
 			rcvBuffer[i] = '\0';
 	}
+	printf("Client Quited!\n");
 	close(c_socket);
 	return 0;	
 }

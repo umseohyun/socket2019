@@ -5,11 +5,11 @@
 
 #define PORT 9000
 #define BUFSIZE 100
-char rcvBuffer[BUFSIZE];
 char hi[BUFSIZE] = "Hi, Nice to meet you!";
 char name[BUFSIZE] = "My name is ChatBot!";
 char age[BUFSIZE] = "I'm 20 years old";
 char none[BUFSIZE] = "I don't know!";
+char rcvBuffer[BUFSIZE];
 char sndBuffer[BUFSIZE];
 char cmp1[BUFSIZE];
 char cmp2[BUFSIZE];
@@ -53,9 +53,14 @@ int main(){
 		printf("/client is connected\n");
 		printf("클라이언트 접속 허용\n");
 		while(1){
-			strcpy(rcvBuffer,"\0");
-			strcpy(sndBuffer,"\0");
+			for(i=0;i<BUFSIZE;i++){ //initialize
+				rcvBuffer[i]='\0';
+				sndBuffer[i]='\0';
+				cmp1[i]='\0';
+				cmp2[i]='\0';
+			}
 			n = read(c_socket, rcvBuffer, sizeof(rcvBuffer));
+			rcvBuffer[n]='\0';
 			printf("received data : %s\n",rcvBuffer);
 			if(strncasecmp(rcvBuffer, "quit", 4) == 0 || strncasecmp(rcvBuffer,"kill server",11) == 0)
 				break;
@@ -67,7 +72,7 @@ int main(){
 				write(c_socket, age, strlen(age));
 			else if(strncasecmp(rcvBuffer, "strlen", 6) == 0)
 			{
-				stlen = strlen(rcvBuffer)-8;
+				stlen = strlen(rcvBuffer)-7;
 				sprintf(sndBuffer, "string length is %d", stlen);
 				write(c_socket, sndBuffer, strlen(sndBuffer));
 			}
@@ -76,11 +81,11 @@ int main(){
 				strtok(rcvBuffer," ");
 				strcpy(cmp1, strtok(NULL," "));
 				strcpy(cmp2, strtok(NULL," "));
-				if(strcmp(cmp1,cmp2) == 0){
-					sprintf(sndBuffer,"%s == %s", cmp1, cmp2);
+				if(strcmp(cmp1, cmp2) == 0){
+					sprintf(sndBuffer,"%s == %s(Same(%d))", cmp1, cmp2, strcmp(cmp1, cmp2));
 				}
 				else{
-					sprintf(sndBuffer,"%s != %s", cmp1, cmp2);
+					sprintf(sndBuffer,"%s != %s(Not same(%d))", cmp1, cmp2, strcmp(cmp1, cmp2));
 				}
 				write(c_socket, sndBuffer, strlen(sndBuffer));
 			}
@@ -91,6 +96,7 @@ int main(){
 		if(strncasecmp(rcvBuffer,"kill server",11) == 0)
 			break;
 	}
+	printf("Server killed!\n");
 	close(s_socket);
 	return 0;	
 }
