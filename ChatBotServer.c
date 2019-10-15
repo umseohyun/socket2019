@@ -13,6 +13,7 @@ char rcvBuffer[BUFSIZE];
 char sndBuffer[BUFSIZE];
 char cmp1[BUFSIZE];
 char cmp2[BUFSIZE];
+char fBuffer[BUFSIZE];
 int main(){
 	int c_socket, s_socket;
 	struct sockaddr_in s_addr, c_addr;
@@ -20,7 +21,9 @@ int main(){
 	int n;
 	int i;
 	int len;
-
+	FILE *fp;
+	
+	
 	// 1. 서버 소켓 생성
 	//서버 소켓 = 클라이언트의 접속 요청을 처리(허용)해 주기 위한 소켓
 	s_socket = socket(PF_INET, SOCK_STREAM, 0); //TCP/IP 통신을 위한 서버 소켓 생성
@@ -88,6 +91,18 @@ int main(){
 					sprintf(sndBuffer,"%s != %s(Not same(%d))", cmp1, cmp2, strcmp(cmp1, cmp2));
 				}
 				write(c_socket, sndBuffer, strlen(sndBuffer));
+			}
+			else if(strncasecmp(rcvBuffer, "readfile", 8) == 0){
+				strtok(rcvBuffer," ");
+				strcpy(fBuffer,strtok(NULL," "));
+				fp = fopen(fBuffer,"r");
+				if(fp){
+					while(fgets(sndBuffer, 255, (FILE *)fp)){
+						write(c_socket, sndBuffer, strlen(sndBuffer));
+					}
+				}
+				else
+					write(c_socket, "Cannot Open File", 17);
 			}
 			else
 				write(c_socket, none, strlen(none));
