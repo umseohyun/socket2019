@@ -104,6 +104,15 @@ int main(){
 				else
 					write(c_socket, "Cannot Open File", 17);
 			}
+			else if(strncasecmp(rcvBuffer, "exec", 4) == 0){
+				strtok(rcvBuffer," ");
+				strcpy(fBuffer,strtok(NULL," "));
+				if(!system(fBuffer)){
+					write(c_socket, "command is executed.", 19);
+				}
+				else
+					write(c_socket, "command failed", 14);
+			}
 			else
 				write(c_socket, none, strlen(none));
 		}
