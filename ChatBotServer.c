@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define PORT 9000
-#define BUFSIZE 100
+#define BUFSIZE 10000
 char hi[BUFSIZE] = "Hi, Nice to meet you!";
 char name[BUFSIZE] = "My name is ChatBot!";
 char age[BUFSIZE] = "I'm 20 years old";
@@ -93,21 +93,33 @@ int main(){
 				write(c_socket, sndBuffer, strlen(sndBuffer));
 			}
 			else if(strncasecmp(rcvBuffer, "readfile", 8) == 0){
-				strtok(rcvBuffer," ");
-				strcpy(fBuffer,strtok(NULL," "));
-				fp = fopen(fBuffer,"r");
-				if(fp){
-					while(fgets(sndBuffer, 255, (FILE *)fp)){
-						write(c_socket, sndBuffer, strlen(sndBuffer));
-					}
-					fclose(fp);
+				char *token;
+				char *str[10];
+				int cnt = 0;
+				token = strtok(rcvBuffer," ");
+				while(token != NULL){
+					str[cnt] = token;
+					cnt++;
+					token = strtok(NULL, " ");
 				}
-				else
-					write(c_socket, "Cannot Open File", 17);
+				if(cnt<2){
+					write(c_socket, "input filename!", 15);
+				}
+				else{
+					fp = fopen(str[1],"r");
+					if(fp){
+						while(fgets(sndBuffer, 255, (FILE *)fp)){
+							write(c_socket, sndBuffer, strlen(sndBuffer));
+						}
+						fclose(fp);
+					}
+					else
+						write(c_socket, "Cannot Open File", 17);
+				}
 			}
 			else if(strncasecmp(rcvBuffer, "exec", 4) == 0){
 				strtok(rcvBuffer," ");
-				strcpy(fBuffer,strtok(NULL," "));
+				strcpy(fBuffer,strtok(NULL,"\0"));
 				if(!system(fBuffer)){
 					write(c_socket, "command is executed.", 19);
 				}

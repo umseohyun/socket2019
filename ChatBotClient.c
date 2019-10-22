@@ -5,7 +5,7 @@
 
 #define PORT 9000
 #define IPADDR "127.0.0.1"
-#define BUFSIZE 100
+#define BUFSIZE 10000
 
 int main(){
 	int c_socket; 
